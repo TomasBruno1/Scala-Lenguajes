@@ -142,7 +142,7 @@ class Point(_x: Int, _y: Int) {
     
     override def toString: String = { s"Point($x, $y)")
 }
-
+// el object es como un singleton, se instancia solo y una vez nada más
 object PointApp extends App {
     val p = new Point( _x = 3, _y= 4)
     println(p)
@@ -178,6 +178,8 @@ object PointApp extends App {
 
 case class Point(x: Int, y: Int)
     def +(p: Point) = Point(x + p.x, y + p.y)
+    
+    // existe el copy para que te devuelva una igual con algo distinto si queres (inmutabilidad)
 
 object PointApp extends App {
     val p = Point(3,4)
