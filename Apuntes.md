@@ -187,3 +187,18 @@ object PointApp extends App {
     val result = p + p
 ```
 
+Instances -> apunta a Type class
+(given)
+
+Type class
+(trait/extensions)
+
+Algoritmo genérico -> apunta a Type class
+
+User -> apunta a las otras 3
+
+Ejemplo de Numeric
+Type class -> Numeric
+Algoritmo genérico -> sum
+Instances -> Numeric[Int]
+User -> Point, Numeric[Point] (como usuario puedo hacer que Point se comporte como Numeric)
