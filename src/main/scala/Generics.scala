@@ -16,3 +16,13 @@ object Generics extends App:
   s.filter(_ != '4')
 
   println(tree)
+
+  val sp = new StringPrinter
+
+  def printString(value: String, printer: Printer[String]) =
+    printer.print(value)
+
+  sp.print("test")
+  
+  printString("hello", new StringPrinter)
+  printString("hello", new AnyPrinter)

@@ -21,7 +21,7 @@ object IntersectionAndUnion extends App :
     val list2 : List[Named] = Nil
 
     // union type
-    val list3 = list1 ++ list2
+    val list3: List[Identificable | Named] = list1 ++ list2
 
     // literal types
     val n: 3 = 3
@@ -39,8 +39,8 @@ object IntersectionAndUnion extends App :
     case class UserPassword(user: String, pwd: String)
     case class Token(hash: String)
 
-    def authentication(credentialss: UserPassword | Token): Boolean =
-      credentialss match
+    def authentication(credentials: UserPassword | Token): Boolean =
+      credentials match
         case UserPassword(u,p) =>
           true
         case Token(key) =>
