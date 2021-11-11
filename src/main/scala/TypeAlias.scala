@@ -28,7 +28,7 @@ object OpaqueTypeAlias:
 //    def +(o: Rate): Rate = d + o
 
 object TypeDemo extends App:
-
+  
   import TypeAlias.*
   import OpaqueTypeAlias.*
   val m: FreqMap = Map("" -> 1)
@@ -36,6 +36,7 @@ object TypeDemo extends App:
   TypeAlias.someFunc1(Map("" -> 1))
   TypeAlias.someFunc2(Map("" -> 1))
 
+  // Double y Distance no son intercambiables
   val d: Distance = Distance(3.4)
   val r: Rate = Rate(0.4)
 
