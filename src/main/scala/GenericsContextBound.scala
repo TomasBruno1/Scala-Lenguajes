@@ -34,7 +34,8 @@ object Objects:
   case class Dimension(h: Int, w: Int)
 
   given Ordering[Dimension] = Ordering.by(e => e.h)
-  given numericD: Numeric[Dimension] = new Numeric[Dimension]:
+
+  given numeric: Numeric[Dimension] = new Numeric[Dimension]:
     def plus(x: Dimension, y: Dimension): Dimension = Dimension(0,0)
     def minus(x: Dimension, y: Dimension): Dimension = Dimension(0,0)
     def times(x: Dimension, y: Dimension): Dimension = Dimension(0,0)
