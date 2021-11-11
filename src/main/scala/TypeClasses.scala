@@ -1,11 +1,13 @@
 // Dibujo del triangulito xd -> xDate
 // VA A TOMAR TYPE CLASS DIJO EL DON
 object TypeClasses:
+  // https://typelevel.org/cats/
+  // https://zio.dev/
 
   // definimos la type class haciendo traits, que nos obligan a implementar funciones
   // o podemos hacer que al T se le agreguen funciones
-  trait SemiGroup[T]:
-    extension (x: T) def combine(y: T): T
+  trait SemiGroup[T]: // algo que se puede combinar
+    extension (x: T) def combine(y: T): T // hace que lo pueda llamar haciendo x.combine(y)
 
   trait Monoid[T] extends SemiGroup[T]:
     def unit: T

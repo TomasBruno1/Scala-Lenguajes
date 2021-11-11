@@ -19,7 +19,11 @@ object Break:
   def break: Unit =
     throw e
 
-  def breakable(p: => Unit): Unit = // no llegamos a copiar
-    0
+  def breakable(op: => Unit): Unit = // no llegamos a copiar
+    try 
+      op
+    catch
+      case e: BreakException =>
+        // do nothing
 
 

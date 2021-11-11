@@ -39,7 +39,8 @@ object FuncStructs extends App:
       catch
         case e: Exception => Left(e)
 
-    def readInt3: Try[Int] = Try(
+    // es como el either pero uno de los lados es una exception
+    def readInt3: Try[Int] = Try( 
       StdIn.readLine("Enter an integer: ").toInt
     )
 

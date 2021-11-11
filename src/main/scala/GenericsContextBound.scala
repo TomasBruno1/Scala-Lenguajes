@@ -13,10 +13,11 @@ object Arithmetics:
   def sum0(list: List[Int]): Int =
     list.foldLeft(0)(_ + _)
 
+  // parametros implicitos con el using
   def sum1[T](list: List[T])(using adder: Adder[T]) =
     list.foldLeft(adder.zero)(adder.add)
 
-  // context bound [T : Adder]
+  // context bound [T : Adder] -> Debe existir un adder para T
   def sum2[T : Adder](list: List[T]) =
     val adder = summon[Adder[T]] // summon the all mighty one
     list.foldLeft(adder.zero)(adder.add)

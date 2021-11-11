@@ -17,7 +17,7 @@ object PatternMatching extends App:
   //    val b: Int= initList(1)
   //    val c: Int= initList(2)
   //  }
-  // Esto se resuelve con lo de abajo muy rico
+  // Esto se resuelve con lo de abajo muy rico -> tasty -> uma delicia kkkk
 
   val List(a, b, c) = list
 

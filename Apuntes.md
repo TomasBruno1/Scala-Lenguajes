@@ -15,6 +15,11 @@ Inferencia de tipos -> si a una variable le asignamos un valor, el compilador de
 val -> inmutable
 var -> mutable
 
+Clase -> template para crear multiples instancias
+Objeto -> una instancia directamente
+Objeto acompañante tiene el mismo nombre que la clase (?
+
+
 __Lista__
 ```scala 
 List(1,2,3)
@@ -200,5 +205,13 @@ User -> apunta a las otras 3
 Ejemplo de Numeric
 Type class -> Numeric
 Algoritmo genérico -> sum
-Instances -> Numeric[Int]
-User -> Point, Numeric[Point] (como usuario puedo hacer que Point se comporte como Numeric)
+Instances -> Numeric\[Int]
+User -> Point, Numeric\[Point] (como usuario puedo hacer que Point se comporte como Numeric)
+
+Akka -> para orientado a actores
+No tiene lo de la heap
+
+Ventaja de inmutabilidad -> no queda corrupta la data si se rompe algo a la mitad
+en esta librería se usa tradicionalmente la mutabilidad, pero ahora se está usando la inmutabilidad
+en akka siempre se pasa una referencia implícita del que manda, entonces no hace falta pasarla como en elixir y erlang
+
