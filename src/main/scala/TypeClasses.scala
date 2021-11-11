@@ -1,3 +1,5 @@
+// Dibujo del triangulito xd -> xDate
+// VA A TOMAR TYPE CLASS DIJO EL DON
 object TypeClasses:
 
   // definimos la type class haciendo traits, que nos obligan a implementar funciones
@@ -7,11 +9,13 @@ object TypeClasses:
 
   trait Monoid[T] extends SemiGroup[T]:
     def unit: T
+  // semigroup y monoid son type classes.
 
   // un monoide tiene un 0 y una funcion de combinacion
   object Monoid:
     def apply[T](using m: Monoid[T]) = m
 
+  // instancias predefinidas de la type class
   given Monoid[Int] with
     extension(x: Int) def combine(y: Int): Int = x + y
     def unit: Int = 0
@@ -23,6 +27,10 @@ object TypeClasses:
 object TypeClassesUsage extends App:
   import TypeClasses.*
 
+  /*
+  defino una funcion generica, para cualquier tipo T del que exista un monoid. Va a funcionar con
+  bibliotecas que todavia no existen y para las que ya existen y no eran monoid.
+  */
   def combineAll[T : Monoid](list: List[T]): T =
     list.foldLeft(Monoid[T].unit)(_.combine(_))
 

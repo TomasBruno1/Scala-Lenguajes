@@ -3,10 +3,11 @@ object Functions extends App:
   def mul(n1: Int, n2: Int): Int = n1 * n2
   mul(2,2)
 
+  // curry
   def mul2(n1: Int)(n2: Int): Int = n1 * n2
   mul2(2)(2)
 
-  val double1: Int => Int = mul2(2) //me devuelve una funcion con un unico parametro. Purificacion
+  val double1: Int => Int = mul2(2) //me devuelve una funcion con un unico parametro. Currificacion aka purificacion
   val double2: Function1[Int, Int] = mul2(2)
 
   double1(5)
@@ -21,9 +22,10 @@ object Functions extends App:
   f1(n => n +1)
   f1(_ +1)
 
-  val partialFunction: PartialFunction[Any, Int] =
+  val partialFunction: PartialFunction[Any, Int] = {
     case n: Int => n + 1
     case s: String => s.length + 1
+  }
 
   println(partialFunction(5))
   println(partialFunction("hola"))
@@ -44,12 +46,13 @@ object Functions extends App:
   //  println(completeFunction(true))
   // explotan
 
+  // le podes preguntar si esta definida para un valor determinado
   if(partialFunction.isDefinedAt((true))) then
     partialFunction(true)
 
   val list = List("hello", 12, true, 4)
 
-  println(list.collect(partialFunction)) // le va a preguntar antes si la soporta o no
+  println(list.collect(partialFunction)) // el collect (de ratatouille) le va a preguntar antes si la soporta o no
 
   println(list.collect {
     case n: Int =>
@@ -61,6 +64,7 @@ object Functions extends App:
       n + 1
   })
 
+  // recibe el parametro por valor
   def f1(p: Int): Unit = {
     println("f1.start")
     p
@@ -85,7 +89,7 @@ object Functions extends App:
     10
   })
 
-  //pasaje de parametro por nombre
+  // pasaje de parametro por nombre -> es tipo un lazy, no lo eval
   def f3(p: => Int): Unit = {
     println("f3.start")
     p // lo evalua envuelto en un try catch

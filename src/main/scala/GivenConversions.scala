@@ -1,4 +1,6 @@
 object PointConversions:
+  
+  // buenardo cuando usas dos bibliotecas que definen el mismo tipo
   given tupleToPoint: Conversion[(Int, Int), Point] = t => Point(t._1, t._2)
 
   given intToPoint: Conversion[Int, Point] = v => Point(v, v)

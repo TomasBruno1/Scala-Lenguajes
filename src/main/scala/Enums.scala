@@ -12,6 +12,7 @@ enum Color(val rgb: Int):
   val day: WeekDay = Mon
 
   day match
+    // usa literal types
     case Sat | Sun => "08-12hs"
     case _ => "08-18hs"
 

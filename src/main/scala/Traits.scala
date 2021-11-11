@@ -36,6 +36,7 @@ object Traits extends App:
 
   p.sayHello()
 
+  // el with se llama mixing
   val dad: Person & Children = new Person("Juan", 80) with Children
 
   dad.addChild(p)
