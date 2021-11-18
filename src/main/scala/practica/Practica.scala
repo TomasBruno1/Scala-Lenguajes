@@ -185,6 +185,31 @@ object LogIfSlow:
       case _: SlowException =>
         println("Slow code detected")
 
+sealed abstract class Tree
+case class Branch(left: Tree, right:Tree) extends Tree
+case class Leaf(x: Int) extends Tree
+
+def sumLeafValue(tree: Tree): Int =
+  tree match {
+    case Branch(l, r) => sumLeafValue(l) + sumLeafValue(r)
+    case Leaf(x) => x
+  }
+
+def countLeaves(tree: Tree): Int =
+  tree match {
+    case Branch(l, r) => countLeaves(l) + countLeaves(r)
+    case Leaf(x) => 1
+  }
+
+def avgLeafValue(tree: Tree): Int =
+  sumLeafValue(tree) / countLeaves(tree)
+
+def leaves(tree: Tree): List[Leaf] =
+  tree match {
+    case Branch(l, r) => leaves(l) ++ leaves(r)
+    case Leaf(x) => List(Leaf(x))
+  }
+
 @main def main = {
 //  import scala.language.implicitConversions
 //  import LocalizedString.given
@@ -238,7 +263,9 @@ object LogIfSlow:
 //    println("that was slow!")
 //  }
 
-
+//  println(sumLeafValue(Branch(Branch(Leaf(5), Leaf(3)), Leaf(6))))
+//  println(avgLeafValue(Branch(Branch(Leaf(5), Leaf(3)), Leaf(6))))
+//  println(leaves(Branch(Branch(Leaf(5), Leaf(3)), Leaf(6))))
 }
 
 
