@@ -5,40 +5,74 @@ import scala.io.Source
 import scala.math.abs
 import scala.util.{Failure, Success}
 
+/**
+  Crear una estructura jerárquica con “Personas” que represente la relación
+  padre-hijo. Crear un modelo de ejemplo, con una lista, donde cada elemento está
+  formado por un “árbol” de “personas”.
+ */
 case class Person(name: String, age: Int, children: List[Person] = Nil):
 
+  /**
+  * @return Descendientes (incluyendo a la propia persona)
+  */
   def descendants: List[Person] = this :: children.flatMap(_.descendants)
 
+  /**
+  * @return Personas menores y mayores (utilizar la lista de descendientes y la función partition)
+  */
   def adultsAndMinors: (List[Person], List[Person]) = descendants.partition(_.age >= 18)
 
+  /**
+  * @return Personas sin hijos
+  */
   def withoutChildren: List[Person] = descendants.filter(_.children.isEmpty)
 
+  /**
+  * @return Personas con hijos
+  */
   def withChildren: List[Person] = descendants.filter(_.children.nonEmpty)
 
+  /**
+  * @return Hermanos mellizos (zip)
+  */
+  def twins = withChildren.flatMap(_.twinChildren)
+  def twinChildren: List[(Person, Person)] = consecutiveChildren.filter((a, b) => a.age == b.age)
+  def consecutiveChildren: List[(Person, Person)] = childrenByAge.zip(childrenByAge.tail)
   def childrenByAge: List[Person] = children.sortBy(_.age)
 
-  def consecutiveChildren: List[(Person, Person)] = childrenByAge.zip(childrenByAge.tail)
-
-  def twinChildren: List[(Person, Person)] = consecutiveChildren.filter((a, b) => a.age == b.age)
-
-  def twins = withChildren.flatMap(_.twinChildren)
-
+  /**
+  * @return Hermanos con más de 4 años de diferencia de edad (zip)
+  */
+  def fourYearDifferenceBrothers = withChildren.flatMap(_.fourYearDifferenceChildren)
   def fourYearDifferenceChildren = consecutiveChildren.filter((a,b) => b.age - a.age > 4) // this does not work
 
-  def fourYearDifferenceBrothers = withChildren.flatMap(_.fourYearDifferenceChildren)
+  /**
+  * @return Personas con hijos de 4 años en promedio
+  */
+  def fourYearAverage = withChildren.filter(_.averageChildrenAge == 4)
+  def averageChildrenAge = children.foldLeft(0)(_ + _.age) / children.size
 
-  def fourYearAverageChildren = children.foldLeft(0)(_ + _.age) / children.size
-
-  def fourYearAverage = withChildren.filter(_.fourYearAverageChildren == 4)
-
+  /**
+  * @param limit El limite para la edad del padre
+  * @return Personas con padres mayores que una edad pasada por parámetro
+  */
   def childrenWithParentOlderThan(limit: Int): List[Person] = withChildren.filter(_.age > limit).flatMap(_.children)
 
+  /**
+  * @return Todos los nietos
+  */
+  def allGrandChildren = withChildren.flatMap(_.grandChildren)
   def grandChildren = children.flatMap(_.children)
 
-  def allGrandChildren = withChildren.flatMap(_.grandChildren)
-
-
-def phrases(text: String, phraseLength: Int = 3): Seq[List[String]] =
+/**
+ * Implementar una función que reciba un texto (por ejemplo el contenido de un
+ * libro) como parámetro y devuelva como resultado una lista con las frases más
+ * populares del libro. Debe considerarse como una frase, cualquier secuencia de 3
+ * palabras dentro de una oración (separadas por punto).
+ * @param text El texto a evaluar.
+ * @param phraseLength La longitud de las frases deseada. (Defaults to 3)
+ */
+def phrases(text: String, phraseLength: Int = 3): List[List[String]] =
 
   // Sentences are the text separated by a dot (.)
   val sentences: List[String] = text
@@ -58,14 +92,19 @@ def phrases(text: String, phraseLength: Int = 3): Seq[List[String]] =
   // Sliding can return phrases shorter than specified length
   phrasesList.filter(_.length == phraseLength)
 
-
 def topPhrases(text: String): List[(String, Int)] =
   phrases(text).groupBy(e => e).map {
     case (phrase, phraseList) =>
       phrase.reduce(_ ++ " " ++ _) -> phraseList.size
   }.toList.sortBy(-_._2)
 
-def mostFreqWord(words: Seq[String]): String = {
+/**
+ * Implementar una función que reciba un texto como parámetro y devuelva un
+ * mapa que permita dadas dos palabras, obtener la siguiente palabra (la más
+ * frecuente). El mapa puede tener la siguiente parametrización Map[List[String], String]
+ * @param words Lista de palabras
+ */
+def mostFreqWord(words: List[String]): String = {
   val (topWord, wordCount) = words.groupBy(e => e).map {
     case (word, wordList) =>
       word -> wordList.length
@@ -76,7 +115,7 @@ def mostFreqWord(words: Seq[String]): String = {
 
 def nextWordMap(content: String): Map[List[String], String] = {
 
-  val allPhrases: Seq[List[String]] = phrases(content)
+  val allPhrases: List[List[String]] = phrases(content)
 
   // Group 3-word phrases by the first two words (_.take(2))
   allPhrases
@@ -85,7 +124,7 @@ def nextWordMap(content: String): Map[List[String], String] = {
       case (phraseHead, phraseList) =>
         // phraseHead are a List of two words
         // phraseList is a list of 3-words phrases, we only need the last word
-        val lastWords: Seq[String] = phraseList.map(_.last)
+        val lastWords: List[String] = phraseList.map(_.last)
 
         // from all the 'lastWords', select the most frequent
         val word = mostFreqWord(lastWords)
@@ -94,14 +133,49 @@ def nextWordMap(content: String): Map[List[String], String] = {
     }
 }
 
+/**
+ * Implementar una case class para almacenar un String localizado con
+ * información sobre el/los lenguajes en los que se encuentra escrito.
+ * @param location List of languages of the string
+ * @param content Content of the string
+ */
 case class LocalizedString(location: List[String], content: String):
+  /**
+  * Definir una función que permita concatenar dos String localizados con el
+  * operador ‘+’.
+  * @param a string to add
+  * @return added string
+  * @example myStr + otherStr
+  */
   def +(a: LocalizedString): LocalizedString = LocalizedString((location ++ a.location).distinct, content ++ a.content)
 
+  /**
+  * Definir una función ‘map’ con una función de parámetro para ser aplicada en
+  * el texto y generar un nuevo String localizado.
+  * @param f function to perform mapping on string content
+  * @return A new LocalizedString with the mapped content
+  * @example str.map(_.toUpperCase)
+  */
   def map(f: String => String) = LocalizedString(location, f(content))
 
 object LocalizedString:
+  /**
+  * Definir una conversión implícita que permita utilizar String regulares en donde
+  * se espera un String localizado.
+  */
   given stringToLocalized: Conversion[String, LocalizedString] = s => LocalizedString(List(), s)
 
+/**
+  * Extender el lenguaje scala para que soporte una estructura “retryable/retry”
+  * @example
+  * import Retry._
+  * var i = 0
+  * retryable {
+  *  i = i + 1
+  *  println(“i=” + i)
+  *  retry (i < 10)
+  * }
+  */
 object Retry:
   private class RetryException extends RuntimeException
   private val e = new RetryException
@@ -121,6 +195,13 @@ object Retry:
           cont = true
 
 import concurrent.ExecutionContext.Implicits.global
+/**
+  * Implementar una función que reciba dos url y compare si el contenido de ambos
+  * tienen el mismo tamaño. En cuyo caso debe devolver true. Ambos URL deben ser
+  * bajados concurrentemente con Futures.
+  * @param url url to download
+  * @return future with downloaded string
+  */
 def downloadAsync(url: String): Future[String] =
   Future {
     val source = Source.fromURL(url)
@@ -147,12 +228,19 @@ def getRows(csv: String): List[List[String]] = csv.split('\n').flatMap(_.split('
 
 def tempSum(rows: List[List[String]]) = rows.foldLeft(0)(_ + _.last.toInt)
 
+/**
+  * Determinar cuando se produjo el cambio más brusco de temperatura entre dos
+  * días consecutivos.
+  */
 def mostBrusqueTemperatureChange(csv: String) =
 
   val rows = getRows(csv)
 
   rows.zip(rows.tail).maxBy((a, b) => abs(a.last.toInt - b.last.toInt))
 
+/**
+  * Cuál fue el mes más caluroso ? (teniendo en cuenta la temperatura promedio)
+  */
 def monthAvg(csv: String) =
 
   val rows = getRows(csv)
@@ -162,12 +250,20 @@ def monthAvg(csv: String) =
       month -> tempSum(rows) / rows.size
   }.toList.maxBy(_._2)
 
+/**
+  * Cuáles fueron los 3 días consecutivos más calurosos?
+  */
 def threeMostHotConsecutive(csv: String) =
 
   val rows = getRows(csv)
 
   rows.sliding(3).maxBy(tempSum(_)/3)
 
+/**
+  * Extender el lenguaje Scala con una construcción "logIfSlow" para imprimir por
+  * consola un mensaje de warning si la ejecución de un bloque de código se extiende
+  * por más de 1 segundo.
+  */
 object LogIfSlow:
   private class SlowException extends RuntimeException
   private val e = new SlowException
@@ -185,6 +281,13 @@ object LogIfSlow:
       case _: SlowException =>
         println("Slow code detected")
 
+  def logIfSlow2(op: => Unit): Unit =
+    val execution = Future {
+      op
+    }
+    Thread.sleep(1000)
+    if(!execution.isCompleted) println("Slow code detected")
+
 sealed abstract class Tree
 case class Branch(left: Tree, right:Tree) extends Tree
 case class Leaf(x: Int) extends Tree
@@ -201,9 +304,16 @@ def countLeaves(tree: Tree): Int =
     case Leaf(x) => 1
   }
 
+/**
+  * Una función que calcule el valor promedio de los datos en las hojas (usar
+  * pattern matching).
+  */
 def avgLeafValue(tree: Tree): Int =
   sumLeafValue(tree) / countLeaves(tree)
 
+/**
+  * Una función que devuelva una lista con todas las hojas
+  */
 def leaves(tree: Tree): List[Leaf] =
   tree match {
     case Branch(l, r) => leaves(l) ++ leaves(r)
