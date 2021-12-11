@@ -320,7 +320,40 @@ def leaves(tree: Tree): List[Leaf] =
     case Leaf(x) => List(Leaf(x))
   }
 
+case class Tweet(author: String, text: String, date: String, country: String)
+
+def hashtagMap(list: List[Tweet]): Map[Int, List[String]] =
+  val result: List[(String, List[Tweet])] = list.groupBy(t => t.date.split('-').head).toList
+
+  result.map {
+    case (year, tweets) =>
+      val yearHashtags: List[String] = tweets.flatMap(t => t.text.split(' ').filter(s => s.head == '#')).toList
+      val topFive: List[String] = yearHashtags.groupBy(e => e).map {
+        case (hashtag, hashtags) =>
+          hashtag -> hashtags.length
+      }.toList.sortBy((a,b) => -b).take(5).map((a, b) => a)
+      year.toInt -> topFive
+  }.toMap
+
+def mostPopularPhrase(list: List[Tweet]): String =
+  list.flatMap(t => t.text.split(' ').toList.sliding(3).toList).groupBy(e => e)
+    .map((phrase, phrases) => phrase -> phrases.length).toList.sortBy((a, b) => -b).head._1.reduce(_ + " " + _)
+
 @main def main = {
+  println(mostPopularPhrase(List(
+    Tweet(
+      author = "yo", text = "hola #pepe como estas? #MUY bien. #BrtsCapo", date = "2020-10-25", country = "arg"
+    ),
+    Tweet(
+      author = "yo", text = "hola azala wala jala #BrtsCapo como estas? Yo bien. #Azala", date = "2020-12-26", country = "uk"
+    ),
+    Tweet(
+      author = "yo", text = " estas? #literalcrankzaharphite Yo #MAL #MAL #MAL #MAL #MAL", date = "2021-10-25", country = "us"
+    ),
+    Tweet(
+      author = "yo", text = "hola #literalcrankzaharphite #anashe #anashe como #estas? Yo #MUY #MUY #MUY #MUY #BrtsCapo", date = "2021-12-4", country = "arg"
+    )
+  )))
 //  import scala.language.implicitConversions
 //  import LocalizedString.given
 //
