@@ -339,21 +339,42 @@ def mostPopularPhrase(list: List[Tweet]): String =
   list.flatMap(t => t.text.split(' ').toList.sliding(3).toList).groupBy(e => e)
     .map((phrase, phrases) => phrase -> phrases.length).toList.sortBy((a, b) => -b).head._1.reduce(_ + " " + _)
 
+case class Book(id: String, authors: List[String], title: String)
+
+def getBooksByAuthor(books: List[Book]): Map[String, List[String]] =
+  books.flatMap {b =>
+    b.authors.map {a =>
+      a -> b.title
+    }
+  }.groupBy(_._1).map {
+    case (author, list) =>
+      author -> list.map(e => e._2)
+  }
+
 @main def main = {
-  println(mostPopularPhrase(List(
-    Tweet(
-      author = "yo", text = "hola #pepe como estas? #MUY bien. #BrtsCapo", date = "2020-10-25", country = "arg"
-    ),
-    Tweet(
-      author = "yo", text = "hola azala wala jala #BrtsCapo como estas? Yo bien. #Azala", date = "2020-12-26", country = "uk"
-    ),
-    Tweet(
-      author = "yo", text = " estas? #literalcrankzaharphite Yo #MAL #MAL #MAL #MAL #MAL", date = "2021-10-25", country = "us"
-    ),
-    Tweet(
-      author = "yo", text = "hola #literalcrankzaharphite #anashe #anashe como #estas? Yo #MUY #MUY #MUY #MUY #BrtsCapo", date = "2021-12-4", country = "arg"
-    )
+  println(getBooksByAuthor(List(
+    Book("1", List("Brts", "Juan"), "Azala"),
+    Book("1", List("Cata", "Juan"), "Literal"),
+    Book("1", List("Brts", "Cata"), "Crank"),
+    Book("1", List("Brts"), "Zahar"),
+    Book("1", List("Brts", "Locu"), "Phite"),
+    Book("1", List("Locu", "Cata", "Brts"), "..."),
+    Book("1", List("Cata"), "Anashe")
   )))
+//  println(mostPopularPhrase(List(
+//    Tweet(
+//      author = "yo", text = "hola #pepe como estas? #MUY bien. #BrtsCapo", date = "2020-10-25", country = "arg"
+//    ),
+//    Tweet(
+//      author = "yo", text = "hola azala wala jala #BrtsCapo como estas? Yo bien. #Azala", date = "2020-12-26", country = "uk"
+//    ),
+//    Tweet(
+//      author = "yo", text = " estas? #literalcrankzaharphite Yo #MAL #MAL #MAL #MAL #MAL", date = "2021-10-25", country = "us"
+//    ),
+//    Tweet(
+//      author = "yo", text = "hola #literalcrankzaharphite #anashe #anashe como #estas? Yo #MUY #MUY #MUY #MUY #BrtsCapo", date = "2021-12-4", country = "arg"
+//    )
+//  )))
 //  import scala.language.implicitConversions
 //  import LocalizedString.given
 //
